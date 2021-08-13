@@ -1,7 +1,12 @@
-import '../styles/globals.css'
+import { useEffect } from "react";
+import { ProvideAuth } from "src/auth";
+// import "styles/globals.sass";
 
-function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+export default function App({ Component, pageProps }) {
+  useEffect(() => void navigator.serviceWorker.register("/sw.js"), []);
+  return (
+    <ProvideAuth>
+      <Component {...pageProps} />
+    </ProvideAuth>
+  );
 }
-
-export default MyApp

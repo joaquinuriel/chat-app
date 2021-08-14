@@ -6,7 +6,7 @@ import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
 import { ArrowLeftIcon, DotsHorizontalIcon, PaperAirplaneIcon } from "@heroicons/react/solid";
 import { PaperClipIcon } from "@heroicons/react/outline";
 import { useAuth } from "src/auth";
-import Menu from "src/menu";
+// import Menu from "src/menu";
 
 export default function Chat() {
   const auth = useAuth();
@@ -30,7 +30,7 @@ export default function Chat() {
   return (
     <>
       <header>
-        <Link href="/">
+        <Link href="/" passHref>
           <a>
             <ArrowLeftIcon />
           </a>

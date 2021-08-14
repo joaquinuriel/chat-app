@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function Menu(props: any) {
+export default function Menu(props) {
   return (
     <aside className={`menu ${props.visible && "visible"}`}>
       <Image src={props.photo} />

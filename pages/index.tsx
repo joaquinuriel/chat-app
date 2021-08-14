@@ -5,9 +5,24 @@ import styles from "styles/home.module.sass";
 import { useAuth } from "src/auth";
 import firebase from "firebase/app";
 import "firebase/firestore";
+import { useState } from "react";
+import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
+import { Data } from "react-firebase-hooks/firestore/dist/firestore/types";
+
+interface userData extends Data<firebase.firestore.DocumentData, "", ""> {
+  name: string;
+  email: string;
+  phone: string;
+  photo: string;
+}
 
 export default function Home() {
   const auth = useAuth();
+  const store = firebase.firestore();
+  const [users, loading, error] = useCollectionDataOnce(
+    store.collection("users")
+  );
+  console.log(users, loading, error);
 
   if (!auth.user) {
     return (
@@ -24,8 +39,21 @@ export default function Home() {
 
   if (auth.user) {
     const { user } = auth;
-    // const store = firebase.firestore();
-    // const collection = store.collection("chats");
+
+    store
+      .collection("users")
+      .doc(user.uid)
+      .get()
+      .then((snap) => {
+        snap.exists ||
+          store.collection("users").doc(user.uid).set({
+            name: user.displayName,
+            email: user.email,
+            phone: user.phoneNumber,
+            photo: user.photoURL,
+          });
+      });
+
     return (
       <div className={styles.container}>
         <Head>
@@ -33,11 +61,36 @@ export default function Home() {
           <meta name="description" content="Chat app by create next app" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <h1>{user.displayName}</h1>
-        <h2>{user.email}</h2>
-        <Image src={user.photoURL} width={48} height={48}></Image>
-        <aside>{}</aside>
+        <Main />
+        <nav>
+          <Link href="/"> Contactos </Link>
+          <Link href="/chat">Chat</Link>
+        </nav>
       </div>
+    );
+  }
+
+  function Main() {
+    return (
+      <main>
+        {users &&
+          users.map((user: userData, key) => {
+            return (
+              <Link href={"/chats/" + user.name} key={key}>
+                <a className="contact">
+                  <Image
+                    src={user.photo}
+                    alt="avatar"
+                    width={48}
+                    height={48}
+                  ></Image>
+                  <p>{user.name}</p>
+                  <i>{user.phone || user.email}</i>
+                </a>
+              </Link>
+            );
+          })}
+      </main>
     );
   }
 }

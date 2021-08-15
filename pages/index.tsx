@@ -18,11 +18,6 @@ interface userData extends Data<firebase.firestore.DocumentData, "", ""> {
 
 export default function Home() {
   const auth = useAuth();
-  const store = firebase.firestore();
-  const [users, loading, error] = useCollectionDataOnce(
-    store.collection("users")
-  );
-  console.log(users, loading, error);
 
   if (!auth.user) {
     return (
@@ -38,22 +33,6 @@ export default function Home() {
   }
 
   if (auth.user) {
-    const { user } = auth;
-
-    store
-      .collection("users")
-      .doc(user.uid)
-      .get()
-      .then((snap) => {
-        snap.exists ||
-          store.collection("users").doc(user.uid).set({
-            name: user.displayName,
-            email: user.email,
-            phone: user.phoneNumber,
-            photo: user.photoURL,
-          });
-      });
-
     return (
       <div className={styles.container}>
         <Head>
@@ -71,6 +50,26 @@ export default function Home() {
   }
 
   function Main() {
+    const { user } = auth;
+    const store = firebase.firestore();
+    const userColection = store.collection("users");
+    const [users, loading, error] = useCollectionDataOnce(userColection);
+    console.log(users, loading, error);
+
+    store
+      .collection("users")
+      .doc(user.uid)
+      .get()
+      .then((snap) => {
+        snap.exists ||
+          store.collection("users").doc(user.uid).set({
+            name: user.displayName,
+            email: user.email,
+            phone: user.phoneNumber,
+            photo: user.photoURL,
+          });
+      });
+
     return (
       <main>
         {users &&

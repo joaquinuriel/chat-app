@@ -3,7 +3,11 @@ import Link from "next/link";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
-import { ArrowLeftIcon, DotsHorizontalIcon, PaperAirplaneIcon } from "@heroicons/react/solid";
+import {
+  ArrowLeftIcon,
+  DotsHorizontalIcon,
+  PaperAirplaneIcon,
+} from "@heroicons/react/solid";
 import { PaperClipIcon } from "@heroicons/react/outline";
 import { useAuth } from "src/auth";
 // import Menu from "src/menu";
@@ -56,8 +60,10 @@ export default function Chat() {
           ))}
       </main>
       <footer>
-        <PaperClipIcon />
-        <input type="text" onChange={handleChange} />
+        <button>
+          <PaperClipIcon />
+        </button>
+        <input type="text" placeholder="Mensaje..." onChange={handleChange} />
         <button onClick={handleSend}>
           <PaperAirplaneIcon />
         </button>

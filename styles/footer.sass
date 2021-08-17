@@ -17,7 +17,7 @@ footer
     button
         width: 60px
         height: 60px
-        margin: 0
+        margin: 10px
         padding: 0
 
         display: flex
@@ -27,16 +27,21 @@ footer
         background: white
         border: none
 
+        &:focus
+
+
     input
         height: 100%
+        width: 100%
         border-radius: 0px
         margin: 0px
         padding: 0px
         border: none
+        outline: none
 
         &::placeholder
             font-family: Inter
-
+            font-size: 1rem
     input + button
         // all: initial
         position: fixed
@@ -54,7 +59,7 @@ footer
         justify-content: center
 
         color: white
-        background: royalblue
+        background: Royalblue
         border: none
 
         svg

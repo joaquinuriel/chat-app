@@ -1,17 +1,44 @@
-.message
-    max-width: 75vw
-    border-radius: 0 15px 15px
-    margin: 10px
-    padding: 5px 10px
-
-    display: inline-flex
+main
+    display: flex
     flex-direction: column
 
-    background: white
+    .message
+        max-width: 75vw
+        border-radius: 0 15px 15px
+        margin: 10px
+        padding: 0px 17px
 
-    p
-        margin: 0px
+        display: inline-flex
+        flex-direction: column
 
-    i
-        font-size: .75rem
-        color: #555
+        background: white
+
+        p
+            margin: 0px
+
+        i
+            font-size: .75rem
+            color: #555
+
+        &.sent
+            justify-content: center
+            align-self: flex-end
+
+            background: Royalblue
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25)
+            border-radius: 15px 0px 15px 15px
+
+            p
+                color: white
+
+            i
+                font-size: .75rem
+                color: white
+
+        &.received
+            justify-content: center
+            align-self: flex-start
+
+            background: #FFFFFF
+            box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25)
+            border-radius: 0px 15px 15px 15px

@@ -32,7 +32,7 @@ export default function Chat() {
             return (
               <div key={key} className={classname}>
                 <p>{msg.text}</p>
-                <i>{msg.username}</i>
+                {msg.uid === auth.user.uid && <i>{msg.username}</i>}
               </div>
             );
           })}

@@ -84,9 +84,8 @@ export default function Home() {
                     height={48}
                   ></Image>
                   <p>{user.name}</p>
-                  {user.email === auth.user.email && (
-                    <i>{user.phone || user.email}</i>
-                  )}
+                  <i>{user.phone || user.email}</i>
+                  
                 </a>
               </Link>
             );

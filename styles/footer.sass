@@ -12,7 +12,7 @@ footer
     justify-content: space-around
 
     background: white
-    box-shadow: 0 0 5px -5px #5555
+    box-shadow: 0 0 4px 0px #5555
 
     button
         width: 60px
@@ -27,8 +27,9 @@ footer
         background: white
         border: none
 
-        &:focus
-
+        &:active
+            background: #d1d1d1
+            border-radius: 30px
 
     input
         height: 100%
@@ -42,6 +43,7 @@ footer
         &::placeholder
             font-family: Inter
             font-size: 1rem
+
     input + button
         // all: initial
         position: fixed
@@ -60,6 +62,7 @@ footer
 
         color: white
         background: Royalblue
+        box-shadow: 0px 0px 4px rgba(0, 0, 0, 0.25)
         border: none
 
         svg

@@ -40,7 +40,7 @@ export default function Home() {
           <meta name="description" content="Chat app by create next app" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <Main />
+        <ChatBox />
         <nav>
           <Link href="/"> Contactos </Link>
           <Link href="/chat">Chat</Link>
@@ -49,7 +49,7 @@ export default function Home() {
     );
   }
 
-  function Main() {
+  function ChatBox() {
     const { user } = auth;
     const store = firebase.firestore();
     const userColection = store.collection("users");
@@ -85,6 +85,7 @@ export default function Home() {
                   ></Image>
                   <p>{user.name}</p>
                   <i>{user.phone || user.email}</i>
+                  
                 </a>
               </Link>
             );

@@ -55,7 +55,7 @@ export default function Chat() {
               }`}
             >
               <p>{msg.text}</p>
-              <i>{msg.username}</i>
+              {/* <i>{msg.username}</i> */}
               {msg.uid !== auth.user.uid && <i>{msg.username}</i>}
             </div>
           ))}

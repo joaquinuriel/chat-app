@@ -6,12 +6,15 @@ import {
   PaperAirplaneIcon,
 } from "@heroicons/react/solid";
 import { PaperClipIcon } from "@heroicons/react/outline";
-// import Menu from "src/menu";
+import Menu from "src/menu";
 import { useState } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "src/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import {
+  useCollectionData,
+  useDocumentDataOnce,
+} from "react-firebase-hooks/firestore";
 
 export default function Chat() {
   const router = useRouter();
@@ -19,7 +22,7 @@ export default function Chat() {
   const auth = useAuth();
   const store = firebase.firestore();
 
-  const ChatRoom = () => {
+  const ChatBox = () => {
     const collection = store.collection("users");
     const doc = collection.doc(auth.user.uid);
     const [messages] = useCollectionData(doc.collection(username as string));
@@ -32,7 +35,7 @@ export default function Chat() {
             return (
               <div key={key} className={classname}>
                 <p>{msg.text}</p>
-                {msg.uid === auth.user.uid && <i>{msg.username}</i>}
+                {msg.uid !== auth.user.uid && <i>{msg.username}</i>}
               </div>
             );
           })}
@@ -50,6 +53,8 @@ export default function Chat() {
   // const [messages] = useCollectionData(query);
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState("");
+
+
   // const query =
   //   auth.user &&
   //   store
@@ -77,6 +82,8 @@ export default function Chat() {
 
   if (!auth.user) return <Link href="/">home</Link>;
 
+  // const userphoto = useDocumentDataOnce()
+
   return (
     <>
       <header>
@@ -88,8 +95,8 @@ export default function Chat() {
           <DotsHorizontalIcon />
         </button>
       </header>
-      {/* <Menu visible={visible} photo={null} />  */}
-      <ChatRoom />
+      <Menu visible={visible} name={username} />
+      <ChatBox />
       <footer>
         <PaperClipIcon />
         <input type="text" onChange={(e) => setContent(e.target.value)} />

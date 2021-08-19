@@ -7,7 +7,7 @@ import {
 } from "@heroicons/react/solid";
 import { PaperClipIcon } from "@heroicons/react/outline";
 import Menu from "src/menu";
-import { useState } from "react";
+import { createRef, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "src/auth";
@@ -54,7 +54,6 @@ export default function Chat() {
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState("");
 
-
   // const query =
   //   auth.user &&
   //   store
@@ -83,6 +82,7 @@ export default function Chat() {
   if (!auth.user) return <Link href="/">home</Link>;
 
   // const userphoto = useDocumentDataOnce()
+  const menuBtnRef = createRef<HTMLButtonElement>()
 
   return (
     <>
@@ -91,11 +91,16 @@ export default function Chat() {
           <ArrowLeftIcon />
         </Link>
         <h1>{username}</h1>
-        <button onClick={() => setVisible(true)}>
+        <button ref={menuBtnRef} onClick={() => setVisible(true)}>
           <DotsHorizontalIcon />
         </button>
       </header>
-      <Menu visible={visible} name={username} />
+      <Menu
+        name={username}
+        btn={menuBtnRef}
+        visible={visible}
+        onClickOut={() => setVisible(false)}
+      />
       <ChatBox />
       <footer>
         <PaperClipIcon />

@@ -7,6 +7,7 @@ import {
 } from "@heroicons/react/solid";
 import { PaperClipIcon } from "@heroicons/react/outline";
 import Menu from "src/menu";
+// import PopUp from "src/popup";
 import { createRef, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
@@ -14,22 +15,39 @@ import { useAuth } from "src/auth";
 import {
   useCollectionData,
   useDocumentDataOnce,
+  useDocumentOnce,
 } from "react-firebase-hooks/firestore";
 
 export default function Chat() {
   const router = useRouter();
-  var { username } = router.query;
+  const { chat } = router.query;
   const auth = useAuth();
   const store = firebase.firestore();
+  const [chatingUserData] = useDocumentDataOnce(
+    store.collection("users").doc(chat as string)
+  );
 
   const ChatBox = () => {
+    const { user } = auth;
+    const atSign = user.email.indexOf("@");
+    const email = user.email.slice(0, atSign);
     const collection = store.collection("users");
-    const doc = collection.doc(auth.user.uid);
-    const [messages] = useCollectionData(doc.collection(username as string));
-    return (
-      <main>
-        {messages &&
-          messages.map((msg, key) => {
+    const doc = collection.doc(email);
+    const col = doc.collection(chat as string);
+    const [messages, loading, error] = useCollectionData(col);
+
+    if (loading) {
+      return (
+        <main>
+          <h1>Loading...</h1>
+        </main>
+      );
+    }
+
+    if (messages) {
+      return (
+        <main>
+          {messages.map((msg, key) => {
             const sent = msg.uid === auth.user.uid;
             const classname = `message ${sent ? "sent" : "received"}`;
             return (
@@ -39,38 +57,26 @@ export default function Chat() {
               </div>
             );
           })}
-      </main>
-    );
+        </main>
+      );
+    }
+
+    return <main></main>;
   };
 
-  // const query =
-  //   auth.user &&
-  //   store
-  //     .collection("users")
-  //     .doc(auth.user.uid)
-  //     .collection(username as string);
-
-  // const [messages] = useCollectionData(query);
   const [visible, setVisible] = useState(false);
   const [content, setContent] = useState("");
+  // const [popUpVisible, setPopUpVisible] = useState(false);
 
-  // const query =
-  //   auth.user &&
-  //   store
-  //     .collection("users")
-  //     .doc(auth.user.uid)
-  //     .collection(username as string);
-  // const [messages] = auth.user ? useCollectionData(query) : [null];
+  const atSign = auth.user.email.indexOf("@");
+  const email = auth.user.email.slice(0, atSign);
 
-  // const [photo, setPhoto] = useState("");
-
-  // if (auth.user) {
-  const handleClick = () => {
+  const handleSend = () => {
     auth.user &&
       store
         .collection("users")
-        .doc(auth.user.uid)
-        .collection(username as string)
+        .doc(email)
+        .collection(router.query.user as string)
         .add({
           text: content,
           username: auth.user.displayName,
@@ -79,10 +85,13 @@ export default function Chat() {
         });
   };
 
+  // const handleImport = () => {};
+
   if (!auth.user) return <Link href="/">home</Link>;
 
   // const userphoto = useDocumentDataOnce()
-  const menuBtnRef = createRef<HTMLButtonElement>()
+  const menuBtnRef = createRef<HTMLButtonElement>();
+  // const popUpBtnRef = createRef<HTMLButtonElement>();
 
   return (
     <>
@@ -90,22 +99,37 @@ export default function Chat() {
         <Link href="/" passHref>
           <ArrowLeftIcon />
         </Link>
-        <h1>{username}</h1>
+        <h1>{router.query.user}</h1>
         <button ref={menuBtnRef} onClick={() => setVisible(true)}>
           <DotsHorizontalIcon />
         </button>
       </header>
       <Menu
-        name={username}
+        name={chatingUserData?.name || "loading"}
+        email={router.query.user}
+        photo={chatingUserData?.photo}
         btn={menuBtnRef}
         visible={visible}
         onClickOut={() => setVisible(false)}
       />
       <ChatBox />
+      {/* <PopUp
+        visible={popUpVisible}
+        store={store.collection("users").doc(email)}
+        onClickOut={(t) =>
+          !t.contains(popUpBtnRef.current) && setPopUpVisible(false)
+        }
+      /> */}
       <footer>
-        <PaperClipIcon />
-        <input type="text" onChange={(e) => setContent(e.target.value)} />
-        <button onClick={handleClick}>
+        {/* <button ref={popUpBtnRef} onClick={() => setPopUpVisible(true)}>
+          <PaperClipIcon />
+        </button> */}
+        <input
+          type="text"
+          placeholder="mensaje..."
+          onChange={(e) => setContent(e.target.value)}
+        />
+        <button onClick={handleSend}>
           <PaperAirplaneIcon />
         </button>
       </footer>

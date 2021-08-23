@@ -5,7 +5,6 @@ import styles from "styles/home.module.sass";
 import { useAuth } from "src/auth";
 import firebase from "firebase/app";
 import "firebase/firestore";
-import { useState } from "react";
 import { useCollectionDataOnce } from "react-firebase-hooks/firestore";
 import { Data } from "react-firebase-hooks/firestore/dist/firestore/types";
 
@@ -18,6 +17,7 @@ interface userData extends Data<firebase.firestore.DocumentData, "", ""> {
 
 export default function Home() {
   const auth = useAuth();
+  const store = firebase.firestore();
 
   if (!auth.user) {
     return (
@@ -27,7 +27,27 @@ export default function Home() {
           <meta name="description" content="Chat app by create next app" />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-        <button onClick={() => auth.googleSignIn()}>Sign In</button>
+        <button
+          onClick={() => {
+            if (auth.googleSignIn) {
+              auth.googleSignIn().then((user) => {
+                const atSign = user.email.indexOf("@");
+                const email = user.email.slice(0, atSign);
+                store.collection("users").doc(email).set({
+                  name: user.displayName,
+                  email: user.email,
+                  phone: user.phoneNumber,
+                  photo: user.photoURL,
+                });
+              });
+            } else {
+              alert("error");
+              console.log(auth);
+            }
+          }}
+        >
+          Sign In
+        </button>
       </div>
     );
   }
@@ -70,12 +90,22 @@ export default function Home() {
           });
       });
 
+    if (loading)
+      return (
+        <main>
+          <h1>Loading...</h1>
+        </main>
+      );
+
     return (
       <main>
         {users &&
           users.map((user: userData, key) => {
+            if (user.email === auth.user.email) return;
+            const atSign = user.email.indexOf("@");
+            const email = user.email.slice(0, atSign);
             return (
-              <Link href={"/chats/" + user.name} key={key}>
+              <Link href={"/chats/" + email} key={key}>
                 <a className="contact">
                   <Image
                     src={user.photo}
@@ -85,7 +115,6 @@ export default function Home() {
                   ></Image>
                   <p>{user.name}</p>
                   <i>{user.phone || user.email}</i>
-                  
                 </a>
               </Link>
             );

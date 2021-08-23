@@ -31,7 +31,7 @@ const initialContext: ReturnType<typeof useProvideAuth> = {
 };
 
 const auth = firebase.auth();
-const authContext = createContext(initialContext);
+const authContext = createContext<any>({});
 
 // Provider component that wraps your app and makes auth object ...
 // ... available to any child component that calls useAuth().

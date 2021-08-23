@@ -11,11 +11,12 @@ export default function Menu(props) {
     menuCondition(target) && btnCondition(target) && props.onClickOut();
   };
   addEventListener("click", handleClick);
+  
   return (
     <aside ref={ref} className={classList}>
-      {/* <Image src={props.photo} /> */}
+      {props.photo && <Image src={props.photo} />}
       <h2>{props.name}</h2>
-      {/* <p>{props.email}</p> */}
+      <p>{props.email}</p>
       <hr />
     </aside>
   );

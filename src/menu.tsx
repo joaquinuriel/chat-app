@@ -14,7 +14,7 @@ export default function Menu(props) {
 
   return (
     <aside ref={ref} className={classList}>
-      {props.photo && <Image src={props.photo} layout="fill" alt="image" />}
+      {props.photo && <Image src={props.photo} alt="image" width={48} height={48} />}
       <h2>{props.name}</h2>
       <p>{props.email}</p>
       <hr />

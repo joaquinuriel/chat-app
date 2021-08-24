@@ -36,9 +36,13 @@ export default function Chat() {
     const { user } = auth;
     const atSign = user.email.indexOf("@");
     const email = user.email.slice(0, atSign);
-    const collection = store.collection("users");
-    const doc = collection.doc(email);
-    const col = doc.collection(chat as string);
+    // const collection = store.collection("users");
+    // const doc = collection.doc(email);
+    // const col = doc.collection(chat as string);
+    // const [messages, loading, error] = useCollectionData(col);
+    const collection = store.collection("chats");
+    const doc = collection.doc((email + chat) as string);
+    const col = doc.collection("chat");
     const [messages, loading, error] = useCollectionData(col);
 
     if (error) {
@@ -78,9 +82,9 @@ export default function Chat() {
     inputRef.current &&
       inputRef.current.value &&
       store
-        .collection("users")
-        .doc(email)
-        .collection(chat as string)
+        .collection("chats")
+        .doc((email + chat) as string)
+        .collection("chat")
         .add({
           text: content,
           username: auth.user.displayName,
@@ -111,8 +115,8 @@ export default function Chat() {
         </button>
       </header>
       <Menu
-        name={chatingUserData?.name || "loading"}
-        email={router.query.user}
+        name={chatingUserData?.name}
+        email={chatingUserData?.email}
         photo={chatingUserData?.photo}
         btn={menuBtnRef}
         visible={visible}

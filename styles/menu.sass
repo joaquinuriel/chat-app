@@ -1,14 +1,26 @@
 .menu
     position: fixed
+    z-index: 1
+
     display: flex
+    flex-direction: column
+    align-items: flex-start
+
     top: 0px
     bottom: 0px
     left: 100vw
     width: 50vw
+    padding: 30px
+
+    background: white
+    box-shadow: 0 0 5px #5555
     transition: 250ms
 
-    &.open
-        left: 50vw
+    div
+        // width: 
 
-    img 
+    img
         border-radius: 50%
+
+.menu.visible
+    left: 50vw

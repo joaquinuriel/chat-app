@@ -65,28 +65,30 @@ export default function Chat() {
           })}
         </main>
       );
-    }
-
-    return <main></main>;
+    } else return <main></main>;
   };
 
   // const [popUpVisible, setPopUpVisible] = useState(false);
 
+  const inputRef = createRef<HTMLInputElement>();
   const atSign = auth.user.email.indexOf("@");
   const email = auth.user.email.slice(0, atSign);
 
   const handleSend = () => {
-    auth.user &&
+    inputRef.current &&
+      inputRef.current.value &&
       store
         .collection("users")
         .doc(email)
-        .collection(router.query.user as string)
+        .collection(chat as string)
         .add({
           text: content,
           username: auth.user.displayName,
           uid: auth.user.uid,
           date: new Date(),
-        });
+        })
+        .then(() => (inputRef.current.value = null))
+        .catch(console.log);
   };
 
   // const handleImport = () => {};
@@ -99,9 +101,11 @@ export default function Chat() {
     <>
       <header>
         <Link href="/" passHref>
-          <ArrowLeftIcon />
+          <a>
+            <ArrowLeftIcon />
+          </a>
         </Link>
-        <h1>{router.query.user}</h1>
+        <h1>{chat}</h1>
         <button ref={menuBtnRef} onClick={() => setVisible(true)}>
           <DotsHorizontalIcon />
         </button>
@@ -115,23 +119,14 @@ export default function Chat() {
         onClickOut={() => setVisible(false)}
       />
       <ChatBox />
-      {/* <PopUp
-        visible={popUpVisible}
-        store={store.collection("users").doc(email)}
-        onClickOut={(t) =>
-          !t.contains(popUpBtnRef.current) && setPopUpVisible(false)
-        }
-      /> */}
       <footer>
-        {/* <button ref={popUpBtnRef} onClick={() => setPopUpVisible(true)}>
-          <PaperClipIcon />
-        </button> */}
         <input
+          ref={inputRef}
           type="text"
           placeholder="mensaje..."
           onChange={(e) => setContent(e.target.value)}
         />
-        <button onClick={handleSend}>
+        <button onClick={() => handleSend()}>
           <PaperAirplaneIcon />
         </button>
       </footer>

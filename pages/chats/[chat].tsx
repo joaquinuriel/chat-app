@@ -40,8 +40,9 @@ export default function Chat() {
     // const doc = collection.doc(email);
     // const col = doc.collection(chat as string);
     // const [messages, loading, error] = useCollectionData(col);
+    const [first] = [chat, email].sort();
     const collection = store.collection("chats");
-    const doc = collection.doc((email + chat) as string);
+    const doc = collection.doc(first);
     const col = doc.collection("chat");
     const [messages, loading, error] = useCollectionData(col);
 
@@ -77,13 +78,14 @@ export default function Chat() {
   const inputRef = createRef<HTMLInputElement>();
   const atSign = auth.user.email.indexOf("@");
   const email = auth.user.email.slice(0, atSign);
+  const [first] = [chat, email].sort();
 
   const handleSend = () => {
     inputRef.current &&
       inputRef.current.value &&
       store
         .collection("chats")
-        .doc((email + chat) as string)
+        .doc(first)
         .collection("chat")
         .add({
           text: content,
@@ -104,7 +106,7 @@ export default function Chat() {
   return (
     <>
       <header>
-        <Link href="/" passHref>
+        <Link href="/">
           <a>
             <ArrowLeftIcon />
           </a>

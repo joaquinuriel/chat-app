@@ -40,11 +40,11 @@ export default function Chat() {
           </a>
         </Link>
         <h1>Chat global</h1>
-        <button>
+        {/* <button>
           <DotsHorizontalIcon />
-        </button>
+        </button> */}
+        <span style={{width: "36px"}}></span>
       </header>
-      {/* <Menu  /> */}
       <main>
         {messages &&
           messages.map((msg, key) => (
@@ -61,9 +61,6 @@ export default function Chat() {
           ))}
       </main>
       <footer>
-        <button>
-          <PaperClipIcon />
-        </button>
         <input type="text" placeholder="Mensaje..." onChange={handleChange} />
         <button onClick={handleSend}>
           <PaperAirplaneIcon />

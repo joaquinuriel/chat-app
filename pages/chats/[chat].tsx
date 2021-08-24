@@ -8,14 +8,13 @@ import {
 import { PaperClipIcon } from "@heroicons/react/outline";
 import Menu from "src/menu";
 // import PopUp from "src/popup";
-import { createRef, useState } from "react";
+import { createRef, useEffect, useState } from "react";
 import firebase from "firebase/app";
 import "firebase/firestore";
 import { useAuth } from "src/auth";
 import {
   useCollectionData,
   useDocumentDataOnce,
-  useDocumentOnce,
 } from "react-firebase-hooks/firestore";
 
 export default function Chat() {
@@ -23,9 +22,15 @@ export default function Chat() {
   const { chat } = router.query;
   const auth = useAuth();
   const store = firebase.firestore();
-  const [chatingUserData] = useDocumentDataOnce(
-    store.collection("users").doc(chat as string)
-  );
+  const col = store.collection("users");
+  const doc = col.doc(chat as string);
+  const [chatingUserData] = useDocumentDataOnce(doc);
+  const [visible, setVisible] = useState(false);
+  const [content, setContent] = useState("");
+
+  useEffect(() => void !auth.user && router.push("/"));
+
+  if (!auth.user) return <main></main>;
 
   const ChatBox = () => {
     const { user } = auth;
@@ -36,10 +41,11 @@ export default function Chat() {
     const col = doc.collection(chat as string);
     const [messages, loading, error] = useCollectionData(col);
 
-    if (loading) {
+    if (error) {
       return (
         <main>
-          <h1>Loading...</h1>
+          <h1>Error</h1>
+          <Link href="/">Home</Link>
         </main>
       );
     }
@@ -64,8 +70,6 @@ export default function Chat() {
     return <main></main>;
   };
 
-  const [visible, setVisible] = useState(false);
-  const [content, setContent] = useState("");
   // const [popUpVisible, setPopUpVisible] = useState(false);
 
   const atSign = auth.user.email.indexOf("@");
@@ -86,8 +90,6 @@ export default function Chat() {
   };
 
   // const handleImport = () => {};
-
-  if (!auth.user) return <Link href="/">home</Link>;
 
   // const userphoto = useDocumentDataOnce()
   const menuBtnRef = createRef<HTMLButtonElement>();

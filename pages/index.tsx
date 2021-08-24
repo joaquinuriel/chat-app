@@ -54,7 +54,7 @@ export default function Home() {
 
   if (auth.user) {
     return (
-      <div className={styles.container}>
+      <div>
         <Head>
           <title>Demo Chat App</title>
           <meta name="description" content="Chat app by create next app" />
@@ -70,25 +70,52 @@ export default function Home() {
   }
 
   function ChatBox() {
-    const { user } = auth;
     const store = firebase.firestore();
     const userColection = store.collection("users");
     const [users, loading, error] = useCollectionDataOnce(userColection);
-    console.log(users, loading, error);
 
-    store
-      .collection("users")
-      .doc(user.uid)
-      .get()
-      .then((snap) => {
-        snap.exists ||
-          store.collection("users").doc(user.uid).set({
-            name: user.displayName,
-            email: user.email,
-            phone: user.phoneNumber,
-            photo: user.photoURL,
-          });
-      });
+    return error ? (
+      <main>
+        <h1>Error 😅</h1>
+      </main>
+    ) : loading ? (
+      <main>
+        <h1>Loading...</h1>
+      </main>
+    ) : users?.length ? (
+      <main>
+        {users.map((user: userData, key) => {
+          if (user.email === auth.user.email) return;
+          const atSign = user.email.indexOf("@");
+          const email = user.email.slice(0, atSign);
+          return (
+            <Link href={"/chats/" + email} key={key}>
+              <a className="contact">
+                <Image
+                  src={user.photo}
+                  alt="avatar"
+                  width={48}
+                  height={48}
+                ></Image>
+                <p>{user.name}</p>
+                <i>{user.phone || user.email}</i>
+              </a>
+            </Link>
+          );
+        })}
+      </main>
+    ) : (
+      <main>
+        <h1>No Users...</h1>
+      </main>
+    );
+
+    if (error)
+      return (
+        <main>
+          <h1>Error 😅</h1>
+        </main>
+      );
 
     if (loading)
       return (
@@ -97,10 +124,10 @@ export default function Home() {
         </main>
       );
 
-    return (
-      <main>
-        {users &&
-          users.map((user: userData, key) => {
+    if (users && users.length) {
+      return (
+        <main>
+          {users.map((user: userData, key) => {
             if (user.email === auth.user.email) return;
             const atSign = user.email.indexOf("@");
             const email = user.email.slice(0, atSign);
@@ -119,7 +146,13 @@ export default function Home() {
               </Link>
             );
           })}
-      </main>
-    );
+        </main>
+      );
+    } else
+      return (
+        <main>
+          <h1>No Users...</h1>
+        </main>
+      );
   }
 }

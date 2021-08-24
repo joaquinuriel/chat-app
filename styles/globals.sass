@@ -1,6 +1,7 @@
 @use "header"
 @use "footer"
 @use "menu"
+@use "buttons"
 @use "messages"
 
 @import url('https://rsms.me/inter/inter.css')
@@ -26,6 +27,28 @@ a
   display: flex
   align-items: center
   justify-content: center
+
+  button
+    
+
+main
+  position: fixed
+  top: 0px
+  bottom: 60px
+  overflow: auto
+
+  width: 100vw
+  padding-bottom: 30px
+
+  display: flex
+  flex-direction: column
+  align-items: center
+  justify-content: center
+
+header + main
+  top: 60px
+  align-items: normal
+  justify-content: normal
 
 nav
   position: fixed

@@ -5,10 +5,8 @@ import "firebase/firestore";
 import { useCollectionData, useDocument } from "react-firebase-hooks/firestore";
 import {
   ArrowLeftIcon,
-  DotsHorizontalIcon,
   PaperAirplaneIcon,
 } from "@heroicons/react/solid";
-import { PaperClipIcon } from "@heroicons/react/outline";
 import { useAuth } from "src/auth";
 // import Menu from "src/menu";
 
@@ -22,14 +20,14 @@ export default function Chat() {
     setText(e.target.value);
   };
 
-  const handleSend: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+  const handleSend: React.MouseEventHandler<HTMLButtonElement> = () => {
     text &&
       store.collection("chat").add({
         text,
         uid: auth.user.uid,
         username: auth.user.displayName,
         date: new Date(),
-      });
+      }).then(() => setText(""))
   };
 
   return (

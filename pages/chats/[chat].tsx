@@ -30,54 +30,56 @@ export default function Chat() {
 
   useEffect(() => void !auth.user && router.push("/"));
 
+  // const ChatBox = () => {
+  const { user } = auth;
+  const atSign = user && user.email.indexOf("@");
+  const email = user && user.email.slice(0, atSign);
+  const collection = user && store.collection("chats");
+  const [first, second] = user ? [chat, email].sort() : [null, null];
+  const _doc = user && collection.doc(first + second);
+  const _col = user && _doc.collection("chat");
+  const query = user && _col.orderBy("date");
+  const [messages] = useCollectionData(query || null);
+
   if (!auth.user) return <main></main>;
 
-  const ChatBox = () => {
-    const { user } = auth;
-    const atSign = user.email.indexOf("@");
-    const email = user.email.slice(0, atSign);
-    const [first, second] = [chat, email].sort();
-    const collection = store.collection("chats");
-    const doc = collection.doc(first + second);
-    const col = doc.collection("chat");
-    const query = col.orderBy("date");
-    const [messages, loading, error] = useCollectionData(query);
+  // if (error) {
+  //   return (
+  //     <main>
+  //       <h1>Error</h1>
+  //       <Link href="/">Home</Link>
+  //     </main>
+  //   );
+  // }
 
-    if (error) {
-      return (
-        <main>
-          <h1>Error</h1>
-          <Link href="/">Home</Link>
-        </main>
-      );
-    }
-
-    if (messages) {
-      return (
-        <main>
-          {messages.map((msg, key) => {
-            const sent = msg.uid === auth.user.uid;
-            const classname = `message ${sent ? "sent" : "received"}`;
-            return (
-              <div key={key} className={classname}>
-                <p>{msg.text}</p>
-                {msg.uid !== auth.user.uid && <i>{msg.username}</i>}
-              </div>
-            );
-          })}
-        </main>
-      );
-    } else return <main></main>;
-  };
+  // if (messages) {
+  //   return (
+  //     <main>
+  //       {messages.map((msg, key) => {
+  //         const sent = msg.uid === auth.user.uid;
+  //         const classname = `message ${sent ? "sent" : "received"}`;
+  //         return (
+  //           <div key={key} className={classname}>
+  //             <p>{msg.text}</p>
+  //             {msg.uid !== auth.user.uid && <i>{msg.username}</i>}
+  //           </div>
+  //         );
+  //       })}
+  //     </main>
+  //   );
+  // } else return <main></main>;
+  // };
 
   // const [popUpVisible, setPopUpVisible] = useState(false);
 
   const inputRef = createRef<HTMLInputElement>();
-  const atSign = auth.user.email.indexOf("@");
-  const email = auth.user.email.slice(0, atSign);
-  const [first, second] = [chat, email].sort();
+  // const atSign = auth.user.email.indexOf("@");
+  // const email = auth.user.email.slice(0, atSign);
+  // const [first, second] = [chat, email].sort();
 
-  const handleChange = (e) => setContent(e.target.value);
+  const handleChange = (e) => {
+    setContent(e.target.value);
+  };
   const handleSend = async () => {
     inputRef.current &&
       inputRef.current.value &&
@@ -122,7 +124,20 @@ export default function Chat() {
         visible={visible}
         onClickOut={() => setVisible(false)}
       />
-      <ChatBox />
+      {/* <ChatBox /> */}
+      <main>
+        {messages &&
+          messages.map((msg, key) => {
+            const sent = msg.uid === auth.user.uid;
+            const classname = `message ${sent ? "sent" : "received"}`;
+            return (
+              <div key={key} className={classname}>
+                <p>{msg.text}</p>
+                {msg.uid !== auth.user.uid && <i>{msg.username}</i>}
+              </div>
+            );
+          })}
+      </main>
       <footer>
         <input
           ref={inputRef}

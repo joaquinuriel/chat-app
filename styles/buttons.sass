@@ -6,12 +6,7 @@ button
     padding: 0
     border: 0
     cursor: pointer
-    animation: click 250ms
+    transition: 250ms
 
-@keyframes click
-    0%
-        transform: scale(100%)
-    50%
+    &:active
         transform: scale(75%)
-    100%
-        transform: scale(100%)

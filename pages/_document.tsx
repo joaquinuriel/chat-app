@@ -12,7 +12,7 @@ export default class document extends Document {
         <Head>
           <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         </Head>
-        <body onTouchStart>
+        <body onTouchStart={null}>
           <Main />
           <NextScript />
         </body>

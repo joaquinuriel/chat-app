@@ -72,7 +72,6 @@ export default function Chat() {
 
   // const [popUpVisible, setPopUpVisible] = useState(false);
 
-  const inputRef = createRef<HTMLInputElement>();
   // const atSign = auth.user.email.indexOf("@");
   // const email = auth.user.email.slice(0, atSign);
   // const [first, second] = [chat, email].sort();
@@ -81,8 +80,7 @@ export default function Chat() {
     setContent(e.target.value);
   };
   const handleSend = async () => {
-    inputRef.current &&
-      inputRef.current.value &&
+    content &&
       store
         .collection("chats")
         .doc(first + second)
@@ -93,7 +91,7 @@ export default function Chat() {
           uid: auth.user.uid,
           date: firebase.firestore.FieldValue.serverTimestamp(),
         })
-        .then(() => (inputRef.current.value = null))
+        .then(() => setContent(""))
         .catch(console.log);
   };
 
@@ -124,7 +122,6 @@ export default function Chat() {
         visible={visible}
         onClickOut={() => setVisible(false)}
       />
-      {/* <ChatBox /> */}
       <main>
         {messages &&
           messages.map((msg, key) => {
@@ -140,11 +137,9 @@ export default function Chat() {
       </main>
       <footer>
         <input
-          ref={inputRef}
-          value={content}
           type="text"
           placeholder="mensaje..."
-          onFocus={(e) => e.preventDefault()}
+          value={content}
           onChange={handleChange}
         />
         <button onClick={() => handleSend()}>

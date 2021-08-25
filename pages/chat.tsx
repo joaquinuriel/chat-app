@@ -23,9 +23,7 @@ export default function Chat() {
   };
 
   const handleSend: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    const node = e.target as HTMLElement;
-    const input = node.parentNode.children.item(0) as HTMLInputElement;
-    input.value &&
+    text &&
       store.collection("chat").add({
         text,
         uid: auth.user.uid,

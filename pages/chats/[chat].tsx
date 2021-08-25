@@ -36,10 +36,6 @@ export default function Chat() {
     const { user } = auth;
     const atSign = user.email.indexOf("@");
     const email = user.email.slice(0, atSign);
-    // const collection = store.collection("users");
-    // const doc = collection.doc(email);
-    // const col = doc.collection(chat as string);
-    // const [messages, loading, error] = useCollectionData(col);
     const [first, second] = [chat, email].sort();
     const collection = store.collection("chats");
     const doc = collection.doc(first + second);

@@ -23,12 +23,15 @@ export default function Chat() {
   };
 
   const handleSend: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    store.collection("chat").add({
-      text,
-      uid: auth.user.uid,
-      username: auth.user.displayName,
-      date: new Date(),
-    });
+    const node = e.target as HTMLElement;
+    const input = node.parentNode.children.item(0) as HTMLInputElement;
+    input.value &&
+      store.collection("chat").add({
+        text,
+        uid: auth.user.uid,
+        username: auth.user.displayName,
+        date: new Date(),
+      });
   };
 
   return (
@@ -43,7 +46,7 @@ export default function Chat() {
         {/* <button>
           <DotsHorizontalIcon />
         </button> */}
-        <span style={{width: "36px"}}></span>
+        <span style={{ width: "36px" }}></span>
       </header>
       <main>
         {messages &&

@@ -44,7 +44,8 @@ export default function Chat() {
     const collection = store.collection("chats");
     const doc = collection.doc(first + second);
     const col = doc.collection("chat");
-    const [messages, loading, error] = useCollectionData(col);
+    const query = col.orderBy("date");
+    const [messages, loading, error] = useCollectionData(query);
 
     if (error) {
       return (
@@ -80,7 +81,8 @@ export default function Chat() {
   const email = auth.user.email.slice(0, atSign);
   const [first, second] = [chat, email].sort();
 
-  const handleSend = () => {
+  const handleChange = (e) => setContent(e.target.value);
+  const handleSend = async () => {
     inputRef.current &&
       inputRef.current.value &&
       store
@@ -91,7 +93,7 @@ export default function Chat() {
           text: content,
           username: auth.user.displayName,
           uid: auth.user.uid,
-          date: new Date(),
+          date: firebase.firestore.FieldValue.serverTimestamp(),
         })
         .then(() => (inputRef.current.value = null))
         .catch(console.log);
@@ -128,9 +130,11 @@ export default function Chat() {
       <footer>
         <input
           ref={inputRef}
+          value={content}
           type="text"
           placeholder="mensaje..."
-          onChange={(e) => setContent(e.target.value)}
+          onFocus={(e) => e.preventDefault()}
+          onChange={handleChange}
         />
         <button onClick={() => handleSend()}>
           <PaperAirplaneIcon />
